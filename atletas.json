@@ -1,0 +1,15 @@
+[
+  {
+    "nombre": "roberto",
+    "edad": 19,
+    "disciplina": "carreras",
+    "departamento": "guatemala",
+    "entrenamientos": [
+      {
+        "fecha": "2006-04-06",
+        "tipo": "carrera",
+        "marca": 5.0
+      }
+    ]
+  }
+]

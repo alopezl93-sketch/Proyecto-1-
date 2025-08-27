@@ -1,0 +1,92 @@
+@startuml
+    class Entrenamiento {
+        -String fecha
+        -String tipo
+        -double marca
+
+        +Entrenamiento(fecha: String, tipo: String, marca: double)
+        +getFecha(): String
+        +getTipo(): String
+        +getMarca(): double
+        +toString(): String
+    }
+
+    class Atleta {
+        -String nombre
+        -int edad
+        -String disciplina
+        -String departamento
+        -List~Entrenamiento~ entrenamientos
+
+        +Atleta(nombre: String, edad: int, disciplina: String, departamento: String)
+        +agregarEntrenamiento(entrenamiento: Entrenamiento): void
+        +getNombre(): String
+        +getEdad(): int
+        +getDisciplina(): String
+        +getDepartamento(): String
+        +getEntrenamientos(): List~Entrenamiento~
+        +toString(): String
+    }
+
+    class EstadisticasAtleta {
+        -Atleta atleta
+
+        +EstadisticasAtleta(atleta: Atleta)
+        +calcularPromedio(): double
+        +obtenerMejorMarca(): double
+        +mostrarEvolucion(): void
+    }
+
+    class RepositorioAtletas {
+        <<SRP: Persistencia>>
+        -String ARCHIVO
+        -Gson gson
+
+        +RepositorioAtletas()
+        +guardar(atletas: List~Atleta~): void
+        +cargar(): List~Atleta~
+    }
+
+    class ServicioAtletas {
+        <<SRP: Lógica de Negocio>>
+        -List~Atleta~ atletas
+        -RepositorioAtletas repositorio
+
+        +ServicioAtletas()
+        +registrarAtleta(nombre: String, edad: int, disciplina: String, departamento: String): void
+        +buscarAtleta(nombre: String): Atleta
+        +registrarSesion(nombreAtleta: String, fecha: String, tipo: String, marca: double): boolean
+        +mostrarHistorial(nombreAtleta: String): void
+        +listarAtletas(): void
+        +guardarDatos(): void
+        +getAtletas(): List~Atleta~
+    }
+
+    class PresentadorAtletas {
+        <<SRP: Presentación>>
+        -Scanner scanner
+        -ServicioAtletas servicio
+
+        +PresentadorAtletas()
+        +mostrarMenu(): void
+        -registrarAtleta(): void
+        -registrarSesion(): void
+        -verHistorial(): void
+        +cerrar(): void
+    }
+    class SistemaAtletas {
+        <<SRP: Coordinación>>
+
+        +main(args: String[]): void
+    }
+    Atleta "1" *-- "0..*" Entrenamiento : "contiene"
+    EstadisticasAtleta "1" --> "1" Atleta : "analiza"
+
+    ServicioAtletas "1" --> "1" RepositorioAtletas : "utiliza para persistencia"
+    ServicioAtletas "1" --> "0..*" Atleta : "gestiona"
+    ServicioAtletas "1" ..> "0..*" EstadisticasAtleta : "genera"
+
+    PresentadorAtletas "1" --> "1" ServicioAtletas : "coordina lógica"
+    SistemaAtletas "1" ..> "1" PresentadorAtletas : "inicia"
+
+@enduml
