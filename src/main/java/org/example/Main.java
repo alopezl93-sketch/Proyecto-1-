@@ -2,8 +2,8 @@ package org.example;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("🇬🇹 Iniciando Sistema de Atletas de Guatemala...");
-        System.out.println("⚡ Versión con soporte MariaDB y JSON");
+        System.out.println(" Iniciando Sistema de Atletas de Guatemala...");
+        System.out.println(" Versión con soporte MariaDB y JSON");
 
         // Crear presentador (por defecto usa MariaDB)
         PresentadorAtletas presentador = new PresentadorAtletas();

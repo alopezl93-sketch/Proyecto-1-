@@ -35,12 +35,12 @@ public class ConexionBD {
             // Configuraciones del pool de conexiones
             config.setMaximumPoolSize(10);
             config.setMinimumIdle(2);
-            config.setIdleTimeout(300000); // 5 minutos
-            config.setConnectionTimeout(20000); // 20 segundos
-            config.setMaxLifetime(1200000); // 20 minutos
+            config.setIdleTimeout(300000);
+            config.setConnectionTimeout(20000);
+            config.setMaxLifetime(1200000);
 
             // Configuraciones adicionales para evitar el cierre prematuro
-            config.setLeakDetectionThreshold(60000); // 1 minuto
+            config.setLeakDetectionThreshold(60000);
             config.addDataSourceProperty("characterEncoding", "utf8");
             config.addDataSourceProperty("useUnicode", "true");
 
