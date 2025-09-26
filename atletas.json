@@ -1,14 +1,19 @@
 [
   {
+    "id": 1,
     "nombre": "roberto",
-    "edad": 19,
-    "disciplina": "carreras",
-    "departamento": "guatemala",
+    "edad": 23,
+    "disciplina": "levantamiento de pesas",
+    "departamento": "guatemala ",
+    "nacionalidad": "guatemalteca",
+    "fechaIngreso": "2020-05-06",
     "entrenamientos": [
       {
-        "fecha": "2006-04-06",
-        "tipo": "carrera",
-        "marca": 5.0
+        "fecha": "2025-05-06",
+        "tipo": "entrenamiento de fuerza",
+        "marca": 4.0,
+        "ubicacion": "INTERNACIONAL",
+        "pais": "corea del sur"
       }
     ]
   }

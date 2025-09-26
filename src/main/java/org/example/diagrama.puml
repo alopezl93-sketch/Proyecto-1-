@@ -1,4 +1,29 @@
 @startuml
+    ' === PATRONES CREACIONALES ===
+
+    class EntrenamientoFactory {
+        <<Factory Method - Creacional>>
+        +crearEntrenamiento(fecha: String, tipo: String, marca: double): Entrenamiento
+        +crearEntrenamientoVelocidad(fecha: String, marca: double): Entrenamiento
+        +crearEntrenamientoResistencia(fecha: String, marca: double): Entrenamiento
+    }
+
+    class AtletaBuilder {
+        <<Builder - Creacional>>
+        -String nombre
+        -int edad
+        -String disciplina
+        -String departamento
+
+        +setNombre(nombre: String): AtletaBuilder
+        +setEdad(edad: int): AtletaBuilder
+        +setDisciplina(disciplina: String): AtletaBuilder
+        +setDepartamento(departamento: String): AtletaBuilder
+        +build(): Atleta
+    }
+
+    ' === CLASES PRINCIPALES ===
+
     class Entrenamiento {
         -String fecha
         -String tipo
@@ -28,13 +53,84 @@
         +toString(): String
     }
 
-    class EstadisticasAtleta {
+    ' === PATRONES ESTRUCTURALES ===
+
+    class AtletaAdapter {
+        <<Adapter - Estructural>>
         -Atleta atleta
 
-        +EstadisticasAtleta(atleta: Atleta)
+        +AtletaAdapter(atleta: Atleta)
+        +obtenerDatosFormateados(): Map~String, Object~
+        +exportarCSV(): String
+    }
+
+    class EstadisticasDecorator {
+        <<Decorator - Estructural>>
+        -EstadisticasAtleta estadisticas
+
+        +EstadisticasDecorator(estadisticas: EstadisticasAtleta)
+        +calcularPromedio(): double
+        +agregarAnalisisDetallado(): String
+    }
+
+    ' === PATRONES DE COMPORTAMIENTO ===
+
+    interface Observer {
+        <<Observer - Comportamiento>>
+        +actualizar(evento: String, atleta: Atleta): void
+    }
+
+    class NotificadorEntrenamiento {
+        <<Observer - Comportamiento>>
+        +actualizar(evento: String, atleta: Atleta): void
+        +enviarNotificacion(mensaje: String): void
+    }
+
+    class StrategyCalculadora {
+        <<Strategy - Comportamiento>>
+        +calcular(entrenamientos: List~Entrenamiento~): double
+    }
+
+    class PromedioSimple {
+        <<Strategy - Comportamiento>>
+        +calcular(entrenamientos: List~Entrenamiento~): double
+    }
+
+    class PromedioPonderado {
+        <<Strategy - Comportamiento>>
+        +calcular(entrenamientos: List~Entrenamiento~): double
+    }
+
+    ' === CLASES EXISTENTES MODIFICADAS ===
+
+    class EstadisticasAtleta {
+        -Atleta atleta
+        -StrategyCalculadora calculadora
+
+        +EstadisticasAtleta(atleta: Atleta, calculadora: StrategyCalculadora)
         +calcularPromedio(): double
         +obtenerMejorMarca(): double
         +mostrarEvolucion(): void
+        +cambiarEstrategia(calculadora: StrategyCalculadora): void
+    }
+
+    class ServicioAtletas {
+        <<SRP: Lógica de Negocio>>
+        -List~Atleta~ atletas
+        -RepositorioAtletas repositorio
+        -List~Observer~ observadores
+        -EntrenamientoFactory factory
+
+        +ServicioAtletas()
+        +registrarAtleta(builder: AtletaBuilder): void
+        +buscarAtleta(nombre: String): Atleta
+        +registrarSesion(nombreAtleta: String, fecha: String, tipo: String, marca: double): boolean
+        +agregarObservador(observer: Observer): void
+        +notificarObservadores(evento: String, atleta: Atleta): void
+        +mostrarHistorial(nombreAtleta: String): void
+        +listarAtletas(): void
+        +guardarDatos(): void
+        +getAtletas(): List~Atleta~
     }
 
     class RepositorioAtletas {
@@ -45,21 +141,6 @@
         +RepositorioAtletas()
         +guardar(atletas: List~Atleta~): void
         +cargar(): List~Atleta~
-    }
-
-    class ServicioAtletas {
-        <<SRP: Lógica de Negocio>>
-        -List~Atleta~ atletas
-        -RepositorioAtletas repositorio
-
-        +ServicioAtletas()
-        +registrarAtleta(nombre: String, edad: int, disciplina: String, departamento: String): void
-        +buscarAtleta(nombre: String): Atleta
-        +registrarSesion(nombreAtleta: String, fecha: String, tipo: String, marca: double): boolean
-        +mostrarHistorial(nombreAtleta: String): void
-        +listarAtletas(): void
-        +guardarDatos(): void
-        +getAtletas(): List~Atleta~
     }
 
     class PresentadorAtletas {
@@ -74,19 +155,39 @@
         -verHistorial(): void
         +cerrar(): void
     }
+
     class SistemaAtletas {
         <<SRP: Coordinación>>
-
         +main(args: String[]): void
     }
+
+    ' === RELACIONES ===
+
+    ' Creacionales
+    EntrenamientoFactory ..> Entrenamiento : "crea"
+    AtletaBuilder ..> Atleta : "construye"
+
+    ' Estructurales
+    AtletaAdapter "1" --> "1" Atleta : "adapta"
+    EstadisticasDecorator "1" --> "1" EstadisticasAtleta : "decora"
+
+    ' Comportamiento
+    Observer <|-- NotificadorEntrenamiento : "implementa"
+    StrategyCalculadora <|-- PromedioSimple : "implementa"
+    StrategyCalculadora <|-- PromedioPonderado : "implementa"
+
+    ' Relaciones principales
     Atleta "1" *-- "0..*" Entrenamiento : "contiene"
     EstadisticasAtleta "1" --> "1" Atleta : "analiza"
+    EstadisticasAtleta "1" --> "1" StrategyCalculadora : "usa estrategia"
 
-    ServicioAtletas "1" --> "1" RepositorioAtletas : "utiliza para persistencia"
+    ServicioAtletas "1" --> "1" RepositorioAtletas : "utiliza"
     ServicioAtletas "1" --> "0..*" Atleta : "gestiona"
+    ServicioAtletas "1" --> "1" EntrenamientoFactory : "usa factory"
+    ServicioAtletas "1" --> "0..*" Observer : "notifica"
     ServicioAtletas "1" ..> "0..*" EstadisticasAtleta : "genera"
 
-    PresentadorAtletas "1" --> "1" ServicioAtletas : "coordina lógica"
+    PresentadorAtletas "1" --> "1" ServicioAtletas : "coordina"
     SistemaAtletas "1" ..> "1" PresentadorAtletas : "inicia"
 
 @enduml
