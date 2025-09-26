@@ -32,7 +32,7 @@ public class ServicioAtletas {
                                 String ubicacion, String pais) {
         Atleta atleta = buscarAtleta(nombreAtleta);
         if (atleta == null) {
-            System.out.println("❌ No se encontró el atleta: " + nombreAtleta);
+            System.out.println(" No se encontró el atleta: " + nombreAtleta);
             return;
         }
         Entrenamiento e = new Entrenamiento(fecha, tipo, marca, ubicacion, pais);
@@ -51,7 +51,7 @@ public class ServicioAtletas {
     // Listar atletas
     public void listarAtletas() {
         if (atletas.isEmpty()) {
-            System.out.println("⚠️ No hay atletas registrados.");
+            System.out.println(" No hay atletas registrados.");
             return;
         }
         atletas.forEach(System.out::println);
@@ -59,9 +59,9 @@ public class ServicioAtletas {
 
     // Estadísticas
     public void mostrarEstadisticas() {
-        System.out.println("📊 Total atletas: " + atletas.size());
+        System.out.println(" Total atletas: " + atletas.size());
         long conEntrenamientos = atletas.stream().filter(a -> !a.getEntrenamientos().isEmpty()).count();
-        System.out.println("📈 Atletas con entrenamientos registrados: " + conEntrenamientos);
+        System.out.println(" Atletas con entrenamientos registrados: " + conEntrenamientos);
     }
 
     // Guardar datos
@@ -69,7 +69,7 @@ public class ServicioAtletas {
         repositorio.guardar(atletas);
     }
 
-    // ✅ Eliminar atleta con borrado de CSV
+    //  Eliminar atleta con borrado de CSV
     public void eliminarAtleta(String nombre) {
         boolean eliminado = repositorio.eliminarAtleta(nombre, atletas);
         if (eliminado) {
@@ -79,21 +79,21 @@ public class ServicioAtletas {
 
             try {
                 CsvUtil.exportarAtletas("reportes/atletas.csv", atletas);
-                System.out.println("✅ CSV actualizado sin el atleta eliminado.");
+                System.out.println(" CSV actualizado sin el atleta eliminado.");
             } catch (Exception e) {
-                System.err.println("❌ Error al actualizar CSV: " + e.getMessage());
+                System.err.println(" Error al actualizar CSV: " + e.getMessage());
             }
         }
     }
 
-    // ✅ Método auxiliar para borrar CSV
+    //  Método auxiliar para borrar CSV
     private void borrarCSV(String ruta) {
         File archivo = new File(ruta);
         if (archivo.exists()) {
             if (archivo.delete()) {
-                System.out.println("🗑️ Archivo eliminado: " + ruta);
+                System.out.println(" Archivo eliminado: " + ruta);
             } else {
-                System.out.println("⚠️ No se pudo eliminar el archivo: " + ruta);
+                System.out.println("️ No se pudo eliminar el archivo: " + ruta);
             }
         }
     }
@@ -109,7 +109,7 @@ public class ServicioAtletas {
                 }
             }
         } catch (Exception e) {
-            System.err.println("❌ Error al exportar CSV: " + e.getMessage());
+            System.err.println(" Error al exportar CSV: " + e.getMessage());
         }
     }
 
@@ -129,27 +129,27 @@ public class ServicioAtletas {
         if (repositorio.isUsandoBaseDatos()) ConexionBD.cerrarDataSource();
     }
 
-    // ✅ Mostrar historial
+    //  Mostrar historial
     public void mostrarHistorial(String nombre) {
         Atleta atleta = buscarAtleta(nombre);
         if (atleta == null) {
-            System.out.println("❌ No se encontró el atleta: " + nombre);
+            System.out.println(" No se encontró el atleta: " + nombre);
             return;
         }
-        System.out.println("\n📜 Historial de entrenamientos de " + nombre + ":");
+        System.out.println("\n Historial de entrenamientos de " + nombre + ":");
         if (atleta.getEntrenamientos().isEmpty()) {
-            System.out.println("⚠️ No tiene entrenamientos registrados.");
+            System.out.println("️ No tiene entrenamientos registrados.");
         } else {
             atleta.getEntrenamientos().forEach(System.out::println);
         }
     }
 
-    // ✅ Sincronizar datos
+    //  Sincronizar datos
     public void sincronizarDatos() {
         repositorio.sincronizarDatos();
     }
 
-    // ✅ Procesar planilla
+    //  Procesar planilla
     public void procesarPlanilla() {
         System.out.println("\n=== PROCESANDO PLANILLA ===");
         planillaService.procesar(atletas);

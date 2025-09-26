@@ -30,34 +30,34 @@ public class RepositorioAtletas {
             atletaDAO = new AtletaDAO();
             entrenamientoDAO = new EntrenamientoDAO();
             if (!ConexionBD.probarConexion()) {
-                System.out.println("❌ No se pudo conectar a MariaDB, usando JSON como respaldo");
+                System.out.println(" No se pudo conectar a MariaDB, usando JSON como respaldo");
                 this.usarBaseDatos = false;
             }
         }
     }
 
-    // ✅ Guardar en ambos formatos
+    //  Guardar en ambos formatos
     public void guardar(List<Atleta> atletas) {
         guardarEnBaseDatos(atletas);
         guardarEnJSON(atletas);
     }
 
-    // ✅ Cargar según modo
+    //  Cargar según modo
     public List<Atleta> cargar() {
         return usarBaseDatos ? cargarDeBaseDatos() : cargarDeJSON();
     }
 
-    // ✅ Guardar un atleta individual en BD
+    //  Guardar un atleta individual en BD
     public int guardarAtleta(Atleta atleta) {
         if (usarBaseDatos) {
             return atletaDAO.crearAtleta(atleta);
         } else {
-            System.out.println("⚠️ Guardado individual no disponible en modo JSON");
+            System.out.println(" Guardado individual no disponible en modo JSON");
             return 0;
         }
     }
 
-    // ✅ Registrar entrenamiento
+    //  Registrar entrenamiento
     public boolean registrarEntrenamiento(Atleta atleta, Entrenamiento entrenamiento) {
         if (usarBaseDatos) {
             return entrenamientoDAO.registrarEntrenamiento(atleta.getId(), entrenamiento);
@@ -67,7 +67,7 @@ public class RepositorioAtletas {
         }
     }
 
-    // ✅ Guardar en BD
+    //  Guardar en BD
     public void guardarEnBaseDatos(List<Atleta> atletas) {
         if (!usarBaseDatos) return;
         try {
@@ -82,35 +82,35 @@ public class RepositorioAtletas {
                     atletaDAO.actualizarAtleta(atleta);
                 }
             }
-            System.out.println("✅ Datos guardados en MariaDB");
+            System.out.println(" Datos guardados en MariaDB");
         } catch (Exception e) {
-            System.err.println("❌ Error al guardar en BD: " + e.getMessage());
+            System.err.println(" Error al guardar en BD: " + e.getMessage());
         }
     }
 
-    // ✅ Cargar desde BD
+    //  Cargar desde BD
     private List<Atleta> cargarDeBaseDatos() {
         try {
             List<Atleta> atletas = atletaDAO.obtenerTodosLosAtletas();
-            System.out.println("📥 Datos cargados desde MariaDB (" + atletas.size() + " atletas)");
+            System.out.println(" Datos cargados desde MariaDB (" + atletas.size() + " atletas)");
             return atletas;
         } catch (Exception e) {
-            System.err.println("❌ Error al cargar de BD: " + e.getMessage());
+            System.err.println(" Error al cargar de BD: " + e.getMessage());
             return cargarDeJSON();
         }
     }
 
-    // ✅ Guardar en JSON
+    // Guardar en JSON
     public void guardarEnJSON(List<Atleta> atletas) {
         try (FileWriter writer = new FileWriter(ARCHIVO_JSON)) {
             gson.toJson(atletas, writer);
-            System.out.println("✅ Datos guardados en JSON (" + atletas.size() + " atletas)");
+            System.out.println(" Datos guardados en JSON (" + atletas.size() + " atletas)");
         } catch (IOException e) {
-            System.err.println("❌ Error al guardar en JSON: " + e.getMessage());
+            System.err.println(" Error al guardar en JSON: " + e.getMessage());
         }
     }
 
-    // ✅ Cargar desde JSON
+    // Cargar desde JSON
     private List<Atleta> cargarDeJSON() {
         File archivo = new File(ARCHIVO_JSON);
         if (!archivo.exists()) {
@@ -125,7 +125,7 @@ public class RepositorioAtletas {
         }
     }
 
-    // ✅ Eliminar atleta
+    //  Eliminar atleta
     public boolean eliminarAtleta(String nombre, List<Atleta> atletas) {
         Atleta atleta = atletas.stream()
                 .filter(a -> a.getNombre().equalsIgnoreCase(nombre))
@@ -133,7 +133,7 @@ public class RepositorioAtletas {
                 .orElse(null);
 
         if (atleta == null) {
-            System.out.println("❌ No se encontró el atleta: " + nombre);
+            System.out.println(" No se encontró el atleta: " + nombre);
             return false;
         }
 
@@ -145,33 +145,33 @@ public class RepositorioAtletas {
         }
 
         guardarEnJSON(atletas); // respaldo
-        System.out.println("✅ Atleta eliminado: " + nombre);
+        System.out.println(" Atleta eliminado: " + nombre);
         return true;
     }
 
-    // ✅ Sincronizar datos JSON ↔ MariaDB
+    //  Sincronizar datos JSON ↔ MariaDB
     public void sincronizarDatos() {
         if (!usarBaseDatos) {
-            System.out.println("⚠️ Sincronización solo disponible en modo MariaDB");
+            System.out.println(" Sincronización solo disponible en modo MariaDB");
             return;
         }
         List<Atleta> atletasJSON = cargarDeJSON();
         if (!atletasJSON.isEmpty()) {
-            System.out.println("🔄 Sincronizando " + atletasJSON.size() + " atletas desde JSON a MariaDB...");
+            System.out.println(" Sincronizando " + atletasJSON.size() + " atletas desde JSON a MariaDB...");
             guardarEnBaseDatos(atletasJSON);
         } else {
-            System.out.println("⚠️ No hay atletas en JSON para sincronizar.");
+            System.out.println(" No hay atletas en JSON para sincronizar.");
         }
     }
 
-    // ✅ Cambiar modo
+    //  Cambiar modo
     public void cambiarModo(boolean usarBaseDatos) {
         this.usarBaseDatos = usarBaseDatos;
         if (usarBaseDatos && (atletaDAO == null || entrenamientoDAO == null)) {
             atletaDAO = new AtletaDAO();
             entrenamientoDAO = new EntrenamientoDAO();
         }
-        System.out.println("🔧 Modo cambiado a: " + (usarBaseDatos ? "MariaDB" : "JSON"));
+        System.out.println(" Modo cambiado a: " + (usarBaseDatos ? "MariaDB" : "JSON"));
     }
 
     public boolean isUsandoBaseDatos() {

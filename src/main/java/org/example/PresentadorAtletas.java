@@ -47,11 +47,11 @@ public class PresentadorAtletas {
                 case 10 -> servicio.procesarPlanilla();
                 case 11 -> eliminarAtleta();
                 case 0 -> System.out.println("🇬🇹 ¡Hasta luego!");
-                default -> System.out.println("❌ Opción inválida");
+                default -> System.out.println(" Opción inválida");
             }
         } while (opcion != 0);
 
-        cerrar(); // al salir del menú también se cierra
+        cerrar();
     }
 
     private void registrarAtleta() {
@@ -71,7 +71,7 @@ public class PresentadorAtletas {
         LocalDate fechaIngreso = fiStr.isBlank() ? null : LocalDate.parse(fiStr);
 
         servicio.registrarAtleta(nombre, edad, disciplina, departamento, nacionalidad, fechaIngreso);
-        System.out.println("✅ Atleta registrado correctamente.");
+        System.out.println(" Atleta registrado correctamente.");
     }
 
     private void registrarSesion() {
@@ -114,35 +114,35 @@ public class PresentadorAtletas {
         try {
             op = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            System.out.println("❌ Opción inválida");
+            System.out.println(" Opción inválida");
             return;
         }
         switch (op) {
             case 1 -> {
                 servicio.cambiarModoAlmacenamiento(true);
-                System.out.println("✅ Cambiado a MariaDB");
+                System.out.println(" Cambiado a MariaDB");
             }
             case 2 -> {
                 servicio.cambiarModoAlmacenamiento(false);
-                System.out.println("✅ Cambiado a archivos JSON");
+                System.out.println(" Cambiado a archivos JSON");
             }
             case 3 -> {
-                if (ConexionBD.probarConexion()) System.out.println("✅ Conexión exitosa a MariaDB");
-                else System.out.println("❌ No se pudo conectar a MariaDB");
+                if (ConexionBD.probarConexion()) System.out.println(" Conexión exitosa a MariaDB");
+                else System.out.println(" No se pudo conectar a MariaDB");
             }
             case 4 -> { return; }
-            default -> System.out.println("❌ Opción inválida");
+            default -> System.out.println(" Opción inválida");
         }
     }
 
     private void sincronizarDatos() {
         System.out.println("\n=== SINCRONIZACIÓN DE DATOS ===");
         if (!servicio.isUsandoBaseDatos()) {
-            System.out.println("⚠️ Debe estar en modo MariaDB para sincronizar");
+            System.out.println(" Debe estar en modo MariaDB para sincronizar");
             return;
         }
         servicio.sincronizarDatos();
-        System.out.println("✅ Sincronización completada");
+        System.out.println(" Sincronización completada");
     }
 
     private void generarReportesCSV() {
@@ -152,7 +152,7 @@ public class PresentadorAtletas {
         System.out.print("Nombre de atleta para entrenamientos (o vacío para saltar): ");
         String nombre = scanner.nextLine();
         servicio.generarCSV(rutaA, nombre);
-        System.out.println("✅ Reportes generados");
+        System.out.println(" Reportes generados");
     }
 
     private void eliminarAtleta() {
@@ -162,12 +162,11 @@ public class PresentadorAtletas {
         servicio.eliminarAtleta(nombre);
     }
 
-    // ✅ Ahora es público para que Main pueda llamarlo
     public void cerrar() {
-        System.out.println("💾 Guardando datos...");
+        System.out.println(" Guardando datos...");
         servicio.guardarDatos();
         servicio.cerrarConexiones();
         scanner.close();
-        System.out.println("✅ Sistema cerrado correctamente");
+        System.out.println(" Sistema cerrado correctamente");
     }
 }

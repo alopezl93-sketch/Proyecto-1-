@@ -8,7 +8,7 @@ public class CsvUtil {
 
     public static void exportarAtletas(String ruta, List<Atleta> atletas) throws IOException {
         try (FileWriter fw = new FileWriter(ruta)) {
-            // ✅ Encabezados más claros y con separador ;
+            // Encabezados más claros y con separador ;
             fw.write("ID;Nombre;Edad;Disciplina;Departamento;Nacionalidad;Fecha de Ingreso\n");
 
             for (Atleta a : atletas) {
@@ -26,7 +26,7 @@ public class CsvUtil {
 
     public static void exportarEntrenamientos(String ruta, Atleta atleta) throws IOException {
         try (FileWriter fw = new FileWriter(ruta)) {
-            // ✅ Encabezados más claros y con separador ;
+            //  Encabezados más claros y con separador ;
             fw.write("Atleta_ID;Fecha;Tipo;Marca;Ubicación;País\n");
 
             for (Entrenamiento e : atleta.getEntrenamientos()) {
@@ -41,7 +41,7 @@ public class CsvUtil {
         }
     }
 
-    // ✅ Escapado mejorado para valores con ; o comillas
+    // Escapado mejorado para valores con ; o comillas
     private static String esc(String s) {
         if (s == null) return "";
         String t = s.replace("\"", "\"\"");

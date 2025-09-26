@@ -4,8 +4,8 @@ public class Entrenamiento {
     private String fecha;
     private String tipo;
     private double marca;
-    private String ubicacion; // "NACIONAL" o "INTERNACIONAL"
-    private String pais;      // Si es internacional
+    private String ubicacion;
+    private String pais;
 
     public Entrenamiento(String fecha, String tipo, double marca) {
         this(fecha, tipo, marca, "NACIONAL", "");

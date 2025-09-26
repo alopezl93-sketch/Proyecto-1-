@@ -10,8 +10,8 @@ public class Atleta {
     private int edad;
     private String disciplina;
     private String departamento;
-    private String nacionalidad;       // NUEVO
-    private LocalDate fechaIngreso;    // NUEVO
+    private String nacionalidad;
+    private LocalDate fechaIngreso;
     private List<Entrenamiento> entrenamientos;
 
     public Atleta(String nombre, int edad, String disciplina, String departamento,
@@ -45,7 +45,6 @@ public class Atleta {
         entrenamientos.add(entrenamiento);
     }
 
-    // Getters/Setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -70,7 +69,6 @@ public class Atleta {
     public List<Entrenamiento> getEntrenamientos() { return entrenamientos; }
     public void setEntrenamientos(List<Entrenamiento> entrenamientos) { this.entrenamientos = entrenamientos; }
 
-    // Compatibilidad antigua
     public double getPeso() { return 0.0; }
     public void setPeso(double peso) {}
 
