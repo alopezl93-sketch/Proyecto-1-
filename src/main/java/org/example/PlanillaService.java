@@ -21,7 +21,7 @@ public class PlanillaService {
 
     // Ejemplo de cálculo de pago (ajústalo a tu lógica real)
     private double calcularPago(Atleta atleta) {
-        // Por ejemplo: Q100 por cada entrenamiento registrado
-        return atleta.getEntrenamientos().size() * 100.0;
+        // Por ejemplo: Q250 por cada entrenamiento registrado
+        return atleta.getEntrenamientos().size() * 250.0;
     }
 }

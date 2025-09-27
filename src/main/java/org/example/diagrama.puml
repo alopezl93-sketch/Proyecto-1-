@@ -1,193 +1,131 @@
 @startuml
-    ' === PATRONES CREACIONALES ===
 
-    class EntrenamientoFactory {
-        <<Factory Method - Creacional>>
-        +crearEntrenamiento(fecha: String, tipo: String, marca: double): Entrenamiento
-        +crearEntrenamientoVelocidad(fecha: String, marca: double): Entrenamiento
-        +crearEntrenamientoResistencia(fecha: String, marca: double): Entrenamiento
-    }
-
-    class AtletaBuilder {
-        <<Builder - Creacional>>
+    class Atleta {
+        -int id
         -String nombre
         -int edad
         -String disciplina
         -String departamento
+        -LocalDate fechaIngreso
+        -List~Entrenamiento~ entrenamientos
 
-        +setNombre(nombre: String): AtletaBuilder
-        +setEdad(edad: int): AtletaBuilder
-        +setDisciplina(disciplina: String): AtletaBuilder
-        +setDepartamento(departamento: String): AtletaBuilder
-        +build(): Atleta
+        +agregarEntrenamiento(): void
+        +getNombre(): String
+        +getEdad(): int
+        +toString(): String
     }
-
-    ' === CLASES PRINCIPALES ===
 
     class Entrenamiento {
         -String fecha
         -String tipo
         -double marca
+        -String ubicacion
+        -String pais
 
-        +Entrenamiento(fecha: String, tipo: String, marca: double)
         +getFecha(): String
         +getTipo(): String
         +getMarca(): double
         +toString(): String
     }
 
-    class Atleta {
-        -String nombre
-        -int edad
-        -String disciplina
-        -String departamento
-        -List~Entrenamiento~ entrenamientos
-
-        +Atleta(nombre: String, edad: int, disciplina: String, departamento: String)
-        +agregarEntrenamiento(entrenamiento: Entrenamiento): void
-        +getNombre(): String
-        +getEdad(): int
-        +getDisciplina(): String
-        +getDepartamento(): String
-        +getEntrenamientos(): List~Entrenamiento~
-        +toString(): String
-    }
-
-    ' === PATRONES ESTRUCTURALES ===
-
-    class AtletaAdapter {
-        <<Adapter - Estructural>>
-        -Atleta atleta
-
-        +AtletaAdapter(atleta: Atleta)
-        +obtenerDatosFormateados(): Map~String, Object~
-        +exportarCSV(): String
-    }
-
-    class EstadisticasDecorator {
-        <<Decorator - Estructural>>
-        -EstadisticasAtleta estadisticas
-
-        +EstadisticasDecorator(estadisticas: EstadisticasAtleta)
-        +calcularPromedio(): double
-        +agregarAnalisisDetallado(): String
-    }
-
-    ' === PATRONES DE COMPORTAMIENTO ===
-
-    interface Observer {
-        <<Observer - Comportamiento>>
-        +actualizar(evento: String, atleta: Atleta): void
-    }
-
-    class NotificadorEntrenamiento {
-        <<Observer - Comportamiento>>
-        +actualizar(evento: String, atleta: Atleta): void
-        +enviarNotificacion(mensaje: String): void
-    }
-
-    class StrategyCalculadora {
-        <<Strategy - Comportamiento>>
-        +calcular(entrenamientos: List~Entrenamiento~): double
-    }
-
-    class PromedioSimple {
-        <<Strategy - Comportamiento>>
-        +calcular(entrenamientos: List~Entrenamiento~): double
-    }
-
-    class PromedioPonderado {
-        <<Strategy - Comportamiento>>
-        +calcular(entrenamientos: List~Entrenamiento~): double
-    }
-
-    ' === CLASES EXISTENTES MODIFICADAS ===
-
-    class EstadisticasAtleta {
-        -Atleta atleta
-        -StrategyCalculadora calculadora
-
-        +EstadisticasAtleta(atleta: Atleta, calculadora: StrategyCalculadora)
-        +calcularPromedio(): double
-        +obtenerMejorMarca(): double
-        +mostrarEvolucion(): void
-        +cambiarEstrategia(calculadora: StrategyCalculadora): void
-    }
-
     class ServicioAtletas {
-        <<SRP: Lógica de Negocio>>
         -List~Atleta~ atletas
         -RepositorioAtletas repositorio
-        -List~Observer~ observadores
-        -EntrenamientoFactory factory
 
-        +ServicioAtletas()
-        +registrarAtleta(builder: AtletaBuilder): void
-        +buscarAtleta(nombre: String): Atleta
-        +registrarSesion(nombreAtleta: String, fecha: String, tipo: String, marca: double): boolean
-        +agregarObservador(observer: Observer): void
-        +notificarObservadores(evento: String, atleta: Atleta): void
-        +mostrarHistorial(nombreAtleta: String): void
-        +listarAtletas(): void
+        +registrarAtleta(): void
+        +registrarSesion(): void
+        +buscarAtleta(): Atleta
+        +mostrarHistorial(): void
         +guardarDatos(): void
-        +getAtletas(): List~Atleta~
     }
 
     class RepositorioAtletas {
-        <<SRP: Persistencia>>
-        -String ARCHIVO
-        -Gson gson
+        -AtletaDAO atletaDAO
+        -EntrenamientoDAO entrenamientoDAO
+        -boolean usarBaseDatos
 
-        +RepositorioAtletas()
-        +guardar(atletas: List~Atleta~): void
+        +guardar(): void
         +cargar(): List~Atleta~
+        +sincronizarDatos(): void
+    }
+
+    class AtletaDAO {
+        +crearAtleta(): int
+        +obtenerAtletaPorId(): Atleta
+        +actualizarAtleta(): boolean
+        +eliminarAtleta(): boolean
+    }
+
+    class EntrenamientoDAO {
+        +registrarEntrenamiento(): boolean
+        +obtenerEntrenamientosPorAtleta(): List~Entrenamiento~
+    }
+
+    class ConexionBD {
+        -HikariDataSource dataSource
+
+        +obtenerConexion(): Connection
+        +probarConexion(): boolean
     }
 
     class PresentadorAtletas {
-        <<SRP: Presentación>>
         -Scanner scanner
         -ServicioAtletas servicio
 
-        +PresentadorAtletas()
         +mostrarMenu(): void
-        -registrarAtleta(): void
-        -registrarSesion(): void
-        -verHistorial(): void
         +cerrar(): void
     }
 
-    class SistemaAtletas {
-        <<SRP: Coordinación>>
-        +main(args: String[]): void
+    class EstadisticasAtleta {
+        -Atleta atleta
+
+        +calcularPromedio(): double
+        +obtenerMejorMarca(): double
+        +promedioNacional(): double
+        +promedioInternacional(): double
+        +mostrarEvolucion(): void
     }
 
-    ' === RELACIONES ===
+    class CsvUtil {
+        +exportarAtletas(): void
+        +exportarEntrenamientos(): void
+    }
 
-    ' Creacionales
-    EntrenamientoFactory ..> Entrenamiento : "crea"
-    AtletaBuilder ..> Atleta : "construye"
+    class PlanillaService {
+        +procesar(): void
+        -calcularPago(): double
+    }
 
-    ' Estructurales
-    AtletaAdapter "1" --> "1" Atleta : "adapta"
-    EstadisticasDecorator "1" --> "1" EstadisticasAtleta : "decora"
+    class LocalDateAdapter {
+        +write(): void
+        +read(): LocalDate
+    }
 
-    ' Comportamiento
-    Observer <|-- NotificadorEntrenamiento : "implementa"
-    StrategyCalculadora <|-- PromedioSimple : "implementa"
-    StrategyCalculadora <|-- PromedioPonderado : "implementa"
+    class Main {
+        +main(): void
+    }
 
-    ' Relaciones principales
-    Atleta "1" *-- "0..*" Entrenamiento : "contiene"
-    EstadisticasAtleta "1" --> "1" Atleta : "analiza"
-    EstadisticasAtleta "1" --> "1" StrategyCalculadora : "usa estrategia"
+    ' Relaciones
+    Atleta "1" *-- "0..*" Entrenamiento : contiene
+    EstadisticasAtleta "1" --> "1" Atleta : analiza
+    ServicioAtletas "1" --> "1" RepositorioAtletas : usa
+    ServicioAtletas "1" --> "0..*" Atleta : gestiona
+    ServicioAtletas "1" --> "1" PlanillaService : usa
+    ServicioAtletas "1" ..> "1" EstadisticasAtleta : genera
+    ServicioAtletas "1" --> "1" CsvUtil : exporta
 
-    ServicioAtletas "1" --> "1" RepositorioAtletas : "utiliza"
-    ServicioAtletas "1" --> "0..*" Atleta : "gestiona"
-    ServicioAtletas "1" --> "1" EntrenamientoFactory : "usa factory"
-    ServicioAtletas "1" --> "0..*" Observer : "notifica"
-    ServicioAtletas "1" ..> "0..*" EstadisticasAtleta : "genera"
+    RepositorioAtletas "1" --> "1" AtletaDAO : usa
+    RepositorioAtletas "1" --> "1" EntrenamientoDAO : usa
+    RepositorioAtletas "1" --> "1" LocalDateAdapter : serializa
 
-    PresentadorAtletas "1" --> "1" ServicioAtletas : "coordina"
-    SistemaAtletas "1" ..> "1" PresentadorAtletas : "inicia"
+    AtletaDAO "1" --> "1" ConexionBD : usa
+    EntrenamientoDAO "1" --> "1" ConexionBD : usa
+
+    PresentadorAtletas "1" --> "1" ServicioAtletas : coordina
+    Main "1" ..> "1" PresentadorAtletas : inicia
+
+    CsvUtil ..> Atleta : exporta
+    CsvUtil ..> Entrenamiento : exporta
+    PlanillaService ..> Atleta : procesa
 
 @enduml

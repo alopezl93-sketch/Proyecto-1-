@@ -147,7 +147,7 @@ public class PresentadorAtletas {
 
     private void generarReportesCSV() {
         System.out.println("\n=== REPORTES CSV ===");
-        System.out.print("Ruta archivo atletas (ej. reportes/atletas.csv): ");
+        System.out.print("Ruta archivo atletas (reportes/atletas.csv): ");
         String rutaA = scanner.nextLine();
         System.out.print("Nombre de atleta para entrenamientos (o vacío para saltar): ");
         String nombre = scanner.nextLine();
